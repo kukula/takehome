@@ -15,6 +15,10 @@ It is a boilerplate Ruby CLI app that can be used to implement a basic zero-depe
 * Defines the CLI as a class, making it easy to test.
 * Comes with boilerplate RSpec tests.
 
+### Create a `CompanyReport` class
+
+Which generates report string.
+
 ## Code challenge
 
 You have a JSON file of users and companies. Create code in Ruby that process these files and creates an `output.txt` file.
