@@ -19,6 +19,13 @@ It is a boilerplate Ruby CLI app that can be used to implement a basic zero-depe
 
 Which generates report string.
 
+### Create a `Main` class to glue together the pieces
+
+- Add models.rb with structs for users and companies
+- Add main.rb where I glue things together
+- Changed CompanyReport to work with structs
+- Make CLI executable working
+
 ## Code challenge
 
 You have a JSON file of users and companies. Create code in Ruby that process these files and creates an `output.txt` file.

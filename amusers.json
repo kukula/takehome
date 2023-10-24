@@ -1,0 +1,11 @@
+[
+  {
+    "id": 42,
+    "name": "Brent Rodriquez",
+    "email": "brent.rodriquez@test.com",
+    "company_id": 4,
+    "email_status": false,
+    "active_status": true,
+    "tokens": 96
+  }
+]

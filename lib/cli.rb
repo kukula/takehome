@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 require 'optparse'
+require_relative './main'
 
 # The CLI class to work with user input.
 class CLI
-  PROGRAM_NAME = 'takehome'
+  PROGRAM_NAME = 'bin/takehome'
 
   # The CLI version
   VERSION = '0.1.0'
@@ -12,12 +13,6 @@ class CLI
   # The URL to report bugs to.
   BUG_REPORT_URL = 'https://github.com/kukula/takehome/issues/new'
 
-  # The CLI's option parser.
-  #
-  # @return [OptionParser]
-  attr_reader :option_parser
-
-  #
   # Initializes the CLI.
   #
   def initialize
@@ -54,7 +49,9 @@ class CLI
   #
   def run(argv = ARGV)
     args = @option_parser.parse(argv)
+    validate_files!
     generate_report(args)
+    0
   rescue OptionParser::InvalidOption => e
     print_error(e)
     -1
@@ -63,21 +60,24 @@ class CLI
     -1
   end
 
-  def generate_report(args)
-    puts args
-  end
-
-  #
   # The option parser.
   #
   # @return [OptionParser]
   #
   def option_parser
-    OptionParser.new do |opts|
+    @option_parser ||= OptionParser.new do |opts|
       opts.banner = "usage: #{PROGRAM_NAME} [options] ARG ..."
 
       opts.separator ''
       opts.separator 'Options:'
+
+      opts.on('-c', '--companies FILE', 'Path to the companies JSON file (required)') do |file|
+        @companies_file = file
+      end
+
+      opts.on('-u', '--users FILE', 'Path to the users JSON file (required)') do |file|
+        @users_file = file
+      end
 
       opts.on('-V', '--version', 'Print the version') do
         puts "#{PROGRAM_NAME} #{VERSION}"
@@ -91,7 +91,25 @@ class CLI
     end
   end
 
-  #
+  private
+
+  attr_reader :companies_file, :users_file
+
+  def generate_report(_args)
+    puts Main.new(companies_file:, users_file:).run
+  end
+
+  def validate_files!
+    [companies_file, users_file].each do |file|
+      raise "File `#{file}` does not exist! Please provide the correct file." unless file && File.exist?(file)
+    end
+  rescue RuntimeError => e
+    print_error(e)
+    puts
+    puts option_parser.help
+    exit
+  end
+
   # Prints an error message to stderr.
   #
   # @param [String] error
@@ -112,7 +130,7 @@ class CLI
       Please report the following text to: #{BUG_REPORT_URL}"
 
       ```
-        #{exception.full_message}
+      #{exception.full_message}
       ```
     ERR
   end

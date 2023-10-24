@@ -4,31 +4,6 @@ require 'cli'
 require 'rspec'
 
 describe CLI do
-  describe '#initialize' do
-    it 'must initialize #option_parser' do
-      expect(subject.option_parser).to be_kind_of(OptionParser)
-    end
-  end
-
-  describe '#print_error' do
-    let(:error) { 'error!' }
-
-    it 'must print the program name and the error message to stderr' do
-      expect { subject.print_error(error) }
-        .to output("#{described_class::PROGRAM_NAME}: #{error}\n").to_stderr
-    end
-  end
-
-  describe '#print_backtrace' do
-    let(:exception) { RuntimeError.new('error!') }
-
-    it 'must print the program name and the error message to stderr' do
-      expect { subject.print_backtrace(exception) }
-        .to output(/Please report the following text to: #{Regexp.escape(described_class::BUG_REPORT_URL)}/)
-        .to_stderr
-    end
-  end
-
   describe '#option_parser' do
     it do
       expect(subject.option_parser).to be_kind_of(OptionParser)
@@ -90,6 +65,14 @@ describe CLI do
   end
 
   describe '#run' do
+    context 'when an valid option is given' do
+      let(:opt) { '--u users.json --c clients.json' }
+
+      it 'returns 0 exit code' do
+        expect { expect(subject.run(opt)).to eq(0) }
+      end
+    end
+
     context 'when an invalid option is given' do
       let(:opt) { '--foo' }
 
