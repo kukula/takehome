@@ -16,7 +16,8 @@ class Main
     companies
       .sort { _1[:id] <=> _2[:id] }
       .map { report_for(_1) }
-      .join("\n")
+      .compact
+      .join
   end
 
   private
@@ -24,24 +25,27 @@ class Main
   attr_reader :companies_file, :users_file, :report_klass
 
   def report_for(company)
+    data = data_for_report(company)
+
+    return unless data
+
     report_klass
-      .new(**data_for_report(company))
+      .new(**data)
       .generate
   end
 
   def data_for_report(company)
     company_users = get_company_users(company.id)
-    if company_users.empty?
-      return {
-        company:,
-        users_emailed: [],
-        users_not_emailed: []
-      }
-    end
+    return if company_users.empty?
 
-    company_users = company_users.group_by(&:email_status)
-    users_emailed = company_users[true].sort { _1.last_name <=> _2.last_name }
-    users_not_emailed = company_users[false].sort { _1.last_name <=> _2.last_name }
+    if company.email_status
+      company_users = company_users.group_by(&:email_status)
+      users_emailed = company_users[true]
+      users_not_emailed = company_users[false]
+    else
+      users_emailed = []
+      users_not_emailed = company_users
+    end
 
     {
       company:,
@@ -51,7 +55,8 @@ class Main
   end
 
   def get_company_users(company_id)
-    users.select { _1.company_id == company_id }
+    users.select { _1.active_status && _1.company_id == company_id }
+      .sort { _1.last_name <=> _2.last_name }
   end
 
   def companies

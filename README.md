@@ -1,6 +1,6 @@
 # Take Home Code Challenge
 
-## Process
+## Working Out Loud
 
 ### Boilerplate
 
@@ -21,10 +21,40 @@ Which generates report string.
 
 ### Create a `Main` class to glue together the pieces
 
-- Add models.rb with structs for users and companies
-- Add main.rb where I glue things together
-- Changed CompanyReport to work with structs
+- Add `models.rb` with structs for users and companies
+- Add `main.rb` where I glue things together
+- Changed `CompanyReport` to work with structs
 - Make CLI executable working
+
+### Made some adjustments to meet all requirements and match `example_output.txt`
+
+Here is a help message when you don't provide files:
+
+```
+$ bin/takehome                                                                       
+bin/takehome: File `` does not exist! Please provide the correct file.
+
+usage: bin/takehome [options] ARG ...
+
+Options:
+    -c, --companies FILE             Path to the companies JSON file (required)
+    -u, --users FILE                 Path to the users JSON file (required)
+    -V, --version                    Print the version
+    -h, --help                       Print the help output
+```
+
+Here is me generating new report and comparing it to example:
+
+```
+$ bin/takehome -c companies.json -u users.json > output.txt                          
+$ diff example_output.txt output.txt                                                 
+89a90
+> 
+```
+
+## Installation
+
+I've used [ASDF](https://github.com/asdf-vm/asdf-ruby). So if you have ASDF installed and you enter a directory ASDF will use or install proper version. Then `bundle install` and you are good to go.
 
 ## Code challenge
 
@@ -45,7 +75,6 @@ Companies should be ordered by company id. Users should be ordered alphabeticall
 - Code needs to be written in Ruby
 - Code needs to be clone-able from GitHub
 - Code file should be named challenge.rb
-
 
 ### Assessment Criteria
 
